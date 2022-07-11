@@ -9,19 +9,36 @@
 #define SHADER_LINK_ERROR               0x03
 
 enum SHADER_TYPE {
-	SHADER_TYPE_BASIC,
+	SHADER_TYPE_SIMPLE,
+	SHADER_TYPE_LIGHTING,
 	SHADER_TYPE_MAX
 };
 
-typedef struct _SHADER {
-	GLuint shader;
-} SHADER;
+typedef struct _PROGRAM {
+	const char* vsFileName;
+	const char* fsFileName;
+	GLuint program;
+} PROGRAM;
 
-bool shaderInit();
-void shaderRelease();
-int shaderCreateProgram(GLuint* _program, const char* _vsFileName, const char* _fsFileName);
-const char* shaderGetString(unsigned int _name);
+class Shader {
+	PROGRAM *m_programs;
+
+public:
+	Shader();
+	~Shader();
+
+	bool init();
+	void setProgram(unsigned int _type);
+	GLuint getProgram(unsigned int _type);
+	int createProgram(GLuint* _program, const char* _vsFileName, const char* _fsFileName);
+	const char* getString(unsigned int _name);
+
+private:
+	GLuint loadShader(const char* _fileName, GLenum _type);
+	bool checkCompileError(GLuint _shader);
+	bool checkLinkError(GLuint _program);
+};
 
 
-extern GLuint g_shader;
+extern Shader g_shader;
 
