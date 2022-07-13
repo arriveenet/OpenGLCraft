@@ -1,26 +1,71 @@
-#include "app.h"
-#include "shader.h"
+#include "App.h"
+#include "Shader.h"
 #include "BlockMesh.h"
+#include "Camera.h"
+#include "Player.h"
+
+#include <glm/gtc/matrix_transform.hpp>
+
+using namespace glm;
 
 BlockMesh blockMesh;
+Player player;
 
-bool appInit()
+int windowWidth = 854;
+int windowHeight = 480;
+
+App g_app;
+
+App::App()
+	: m_projection(1.0f)
+	, m_view(1.0f)
+	, m_modelViewProjection(1.0f)
+	, m_keys{}
+	, m_warpPointer(false)
+	, m_isWireflame(false)
 {
+}
+
+App::~App()
+{
+}
+
+bool App::init()
+{
+	g_shader.init();
+
 	blockMesh.bind();
-	return shaderInit();
+	glClearColor(129 / 255.f, 173 / 255.f, 255 / 255.f, 1.0f);
+
+	return true;
 }
 
-void appRelease()
+void App::update()
 {
-	shaderRelease();
+	if (m_keys['e'])
+		m_warpPointer = m_warpPointer ? false : true;
+	if (m_keys['f'])
+		m_isWireflame = m_isWireflame ? false : true;
+
+	player.update();
+
+	g_camera.update();
+	//printf("x=%d, y=%d\n", m_mousePosition.x, m_mousePosition.y);
 }
 
-void appUpdate()
+void App::draw()
 {
 
-}
+	for (int i = -10; i <= 10; i++) {
+		glBegin(GL_LINES);
+		glVertex3i(i, 0, -10);
+		glVertex3i(i, 0, 10);
+		glVertex3i(-10, 0, i);
+		glVertex3i(10, 0, i);
+		glEnd();
+	}
 
-void appDraw()
-{
 	blockMesh.draw();
+
+	glPolygonMode(GL_FRONT_AND_BACK, m_isWireflame ? GL_LINE : GL_FILL);
 }
