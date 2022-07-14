@@ -3,6 +3,7 @@
 #include "BlockMesh.h"
 #include "Camera.h"
 #include "Player.h"
+#include "TextureManager.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -33,9 +34,12 @@ App::~App()
 bool App::init()
 {
 	g_shader.init();
+	g_textureManager.init();
 
 	blockMesh.bind();
+
 	glClearColor(129 / 255.f, 173 / 255.f, 255 / 255.f, 1.0f);
+	glEnable(GL_DEPTH_TEST);
 
 	return true;
 }
@@ -55,6 +59,9 @@ void App::update()
 
 void App::draw()
 {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	g_camera.loadMatrix();
 
 	for (int i = -10; i <= 10; i++) {
 		glBegin(GL_LINES);
@@ -68,4 +75,5 @@ void App::draw()
 	blockMesh.draw();
 
 	glPolygonMode(GL_FRONT_AND_BACK, m_isWireflame ? GL_LINE : GL_FILL);
+
 }

@@ -5,7 +5,7 @@
 using namespace glm;
 
 Player::Player()
-	: m_position(0)
+	: m_position(-3, 1, 1)
 	, m_rotation(0)
 	, m_speed(0.04f)
 {
