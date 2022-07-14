@@ -11,6 +11,7 @@ class Camera
 	glm::vec3 m_direction;
 	glm::mat4 m_projection;
 	glm::mat4 m_view;
+	glm::mat4 m_modelViewProjection;
 	float m_fovy;
 
 public:
@@ -25,6 +26,7 @@ public:
 	void taranslate(glm::vec3& _position);
 	void rotate(int _x, int _y);
 	void update();
+	void loadMatrix();
 };
 
 extern Camera g_camera;

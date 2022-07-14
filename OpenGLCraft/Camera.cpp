@@ -11,12 +11,13 @@ Camera g_camera;
 
 Camera::Camera()
 	: m_rotation(0)
-	, m_eye(2,1,2)
+	, m_eye(2, 1, 2)
 	, m_center(0)
 	, m_up(0, 1, 0)
 	, m_direction(0)
 	, m_projection(1.0f)
 	, m_view(1.0f)
+	, m_modelViewProjection(1.0f)
 	, m_fovy(90.f)
 {
 }
@@ -84,12 +85,15 @@ void Camera::update()
 {
 	m_projection = perspective(radians(90.f), (float)windowWidth / (float)windowHeight, 0.1f, 100.f);
 	m_view = lookAt(m_eye, m_center, m_up);
-	mat4 m_modelViewProjection = m_projection * m_view;
+	m_modelViewProjection = m_projection * m_view;
+}
 
-	glUseProgram(g_shader);
-
+void Camera::loadMatrix()
+{
+	g_shader.setProgram(PROGRAM_TYPE_SIMPLE);
+	GLuint program = g_shader.getProgram(PROGRAM_TYPE_SIMPLE);
 	glUniformMatrix4fv(
-		glGetUniformLocation(g_shader,
+		glGetUniformLocation(program,
 			"modelViewProjection"),
 		1, GL_FALSE, (GLfloat*)&m_modelViewProjection);
 }
