@@ -3,7 +3,7 @@
 
 Shader g_shader;
 
-PROGRAM programs[SHADER_TYPE_MAX] = {
+PROGRAM programs[PROGRAM_TYPE_MAX] = {
 	{"simple.vert", "simple.frag", 0},
 	{"lighting.vert", "lighting.frag", 0}
 };
@@ -15,7 +15,7 @@ Shader::Shader()
 
 Shader::~Shader()
 {
-	for (int i = 0; i < SHADER_TYPE_MAX; i++) {
+	for (int i = 0; i < PROGRAM_TYPE_MAX; i++) {
 		glDeleteProgram(m_programs[i].program);
 	}
 }
@@ -25,7 +25,7 @@ bool Shader::init()
 	bool result = true;
 	const char* filePath = "resource\\shaders\\";
 
-	for (int i = 0; i < SHADER_TYPE_MAX; i++) {
+	for (int i = 0; i < PROGRAM_TYPE_MAX; i++) {
 		char vsFileName[256];
 		char fsFileName[256];
 		sprintf_s(vsFileName, "%s%s", filePath, m_programs[i].vsFileName);
