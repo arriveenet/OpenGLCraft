@@ -1,4 +1,6 @@
 #pragma once
+#ifndef _TEXTURE_H
+#define _TEXTURE_H
 
 class Texture
 {
@@ -26,3 +28,5 @@ private:
 	int openBitmapFile(const char* _fileName);
 	int createTexImage(unsigned char* _colorKey = nullptr);
 };
+
+#endif // !_TEXTURE_H
