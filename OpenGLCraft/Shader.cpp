@@ -5,7 +5,8 @@ Shader g_shader;
 
 PROGRAM programs[PROGRAM_TYPE_MAX] = {
 	{"simple.vert", "simple.frag", 0},
-	{"lighting.vert", "lighting.frag", 0}
+	{"lighting.vert", "lighting.frag", 0},
+	{"font.vert", "font.frag", 0}
 };
 
 Shader::Shader()
@@ -33,7 +34,7 @@ bool Shader::init()
 
 		if (createProgram(&m_programs[i].program, vsFileName, fsFileName) != SHADER_OK) {
 			//glDeleteProgram(g_shader);
-			fprintf(stderr, "%s", getString(result));
+			fprintf(stderr, "%s\n", getString(result));
 			result = false;
 		}
 	}
