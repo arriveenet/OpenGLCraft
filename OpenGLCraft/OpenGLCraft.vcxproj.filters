@@ -39,6 +39,9 @@
     <ClCompile Include="App.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Font.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">
@@ -62,11 +65,16 @@
     <ClInclude Include="TextureManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Font.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resource\shaders\simple.frag" />
     <None Include="resource\shaders\simple.vert" />
     <None Include="resource\shaders\lighting.vert" />
     <None Include="resource\shaders\lighting.frag" />
+    <None Include="resource\shaders\font.frag" />
+    <None Include="resource\shaders\font.vert" />
   </ItemGroup>
 </Project>
