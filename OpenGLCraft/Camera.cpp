@@ -70,19 +70,20 @@ void Camera::rotate(int _x, int _y)
 	if (m_rotation.y < -90.f)
 		m_rotation.y = -90.f;
 
+}
+
+void Camera::update()
+{
 	vec3 direction = {
-		cosf(radians(m_rotation.x)) * cosf(radians(m_rotation.y)),	// x
-		sinf(radians(-m_rotation.y)),								// y
-		sinf(radians(m_rotation.x)) * cosf(radians(m_rotation.y))	// z
+	cosf(radians(m_rotation.x)) * cosf(radians(m_rotation.y)),	// x
+	sinf(radians(-m_rotation.y)),								// y
+	sinf(radians(m_rotation.x)) * cosf(radians(m_rotation.y))	// z
 	};
 
 	//printf("rotate: %f, %f\n", m_rotation.x, m_rotation.y);
 	m_direction = normalize(direction);
 	m_center = m_eye + m_direction;
-}
 
-void Camera::update()
-{
 	m_projection = perspective(radians(90.f), (float)windowWidth / (float)windowHeight, 0.1f, 100.f);
 	m_view = lookAt(m_eye, m_center, m_up);
 	m_modelViewProjection = m_projection * m_view;
