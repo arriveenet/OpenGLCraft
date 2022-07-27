@@ -7,7 +7,6 @@
 class FrameCounter
 {
 	clock_t m_startTime;
-	tm m_currentTime;
 	unsigned int m_counter;
 	unsigned int m_frameCount;
 

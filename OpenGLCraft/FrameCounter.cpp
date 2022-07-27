@@ -3,10 +3,9 @@
 FrameCounter g_frameCounter;
 
 FrameCounter::FrameCounter()
+	: m_counter(0)
+	, m_frameCount(0)
 {
-	errno_t err;
-	time_t t = time(NULL);
-	err = localtime_s(&m_currentTime, &t);
 	m_startTime = clock();
 }
 
