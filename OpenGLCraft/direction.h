@@ -1,0 +1,15 @@
+#pragma once
+#include <glm/glm.hpp>
+
+enum DIRECTION {
+	DIRECTION_NORTH,
+	DIRECTION_SOUTH,
+	DIRECTION_EAST,
+	DIRECTION_WEST,
+	DIRECTION_UP,
+	DIRECTION_DOWN,
+	DIRECTION_MAX
+};
+
+extern const glm::ivec3 DIRECTION_IVEC3[DIRECTION_MAX];
+extern const glm::vec3 DIRECTION_VEC3[DIRECTION_MAX];
