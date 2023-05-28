@@ -114,6 +114,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\FreeSoft\glew-2.1.0\lib\Release\x64;C:\FreeSoft\freeglut\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -130,6 +131,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\FreeSoft\glew-2.1.0\lib\Release\x64;C:\FreeSoft\freeglut\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -138,6 +140,7 @@
     <ClCompile Include="BlockMesh.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Chunk.cpp" />
+    <ClCompile Include="direction.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FrameCounter.cpp" />
     <ClCompile Include="main.cpp" />
@@ -152,6 +155,7 @@
     <ClInclude Include="BlockMesh.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Chunk.h" />
+    <ClInclude Include="direction.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FrameCounter.h" />
     <ClInclude Include="OpenGLInclude.h" />

@@ -37,25 +37,25 @@ bool TextureManager::init()
 
 		sprintf_s(fileName, "%s%s", filePath, fileNames[i]);
 
-		tex.loadBitmapFile(fileName);
+		tex.loadBitmapFile(fileName, 0x00, 0x00, 0x00);
 		glTexImage2D(
-			GL_TEXTURE_2D,      // GLenum target
-			0,                  // GLint level
-			GL_RGBA,            // GLint internalformat
-			tex.getWidth(),     // GLsizei width
-			tex.getHeight(),    // GLsizei height
-			0,                  // GLint border
-			GL_RGBA,            // GLenum format
-			GL_UNSIGNED_BYTE,   // GLenum type
-			tex.getTexImage()); // const GLvoid *pixels
+			GL_TEXTURE_2D,		// GLenum target
+			0,					// GLint level
+			GL_RGBA,			// GLint internalformat
+			tex.getWidth(),		// GLsizei width
+			tex.getHeight(),	// GLsizei height
+			0,					// GLint border
+			GL_RGBA,			// GLenum format
+			GL_UNSIGNED_BYTE,	// GLenum type
+			tex.getTexImage());	// const GLvoid *pixels
 		glTexParameteri(
-			GL_TEXTURE_2D,        // GLenum target
-			GL_TEXTURE_MAG_FILTER,// GLenum pname
-			GL_NEAREST);          // GLint param
+			GL_TEXTURE_2D,			// GLenum target
+			GL_TEXTURE_MAG_FILTER,	// GLenum pname
+			GL_NEAREST);			// GLint param
 		glTexParameteri(
-			GL_TEXTURE_2D,          // GLenum target
-			GL_TEXTURE_MIN_FILTER,  // GLenum pname
-			GL_NEAREST);            // GLint param
+			GL_TEXTURE_2D,			// GLenum target
+			GL_TEXTURE_MIN_FILTER,	// GLenum pname
+			GL_NEAREST);			// GLint param
 		glEnable(GL_TEXTURE_2D);
 		tex.deleteTexImage();
 

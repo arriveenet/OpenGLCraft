@@ -6,6 +6,8 @@
 #include <gl/glut.h>
 #include <glm/glm.hpp>
 
+#include <vector>
+
 /* This tag holds information on how the font was generated. */
 typedef struct tagFONTINFO {
 	short fontSize;
@@ -56,6 +58,11 @@ typedef struct tagFONTCHAR {
 	unsigned char chnl;		// The texture channel where the character image is found (1 = blue, 2 = green, 4 = red, 8 = alpha, 15 = all channels)
 }FONTCHAR;
 
+typedef struct tagFONTVERTIX {
+	glm::vec3 position;
+	glm::vec2 texCoord;
+}FONTVERTIX;
+
 class Font
 {
 	FONTINFO m_info;
@@ -70,12 +77,18 @@ class Font
 
 	glm::mat4 m_projection;
 	glm::mat4 m_view;
+	glm::mat4 m_modelViewProjection;
+
+	std::vector<FONTVERTIX> m_vertices;
 
 public:
 	Font();
 	~Font();
 
+	bool init();
 	bool loadFntFile(const char* _fileName);
+	void setText(float _x, float _y, const char* _format, ...);
+	void bind();
 	void draw();
 };
 

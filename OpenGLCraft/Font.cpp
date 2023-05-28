@@ -7,9 +7,12 @@
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
+#include <stdarg.h>
 #define new ::new(_NORMAL_BLOCK, __FILE__, __LINE__)
 
+#include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 using namespace glm;
 
@@ -26,6 +29,8 @@ Font::Font()
 	, m_vertexArray(0)
 	, m_projection(1.0f)
 	, m_view(1.0f)
+	, m_modelViewProjection(1.0f)
+	, m_vertices()
 {
 }
 
@@ -50,6 +55,35 @@ Font::~Font()
 		glDeleteVertexArrays(1, &m_vertexArray);
 		m_vertexArray = 0;
 	}
+}
+
+bool Font::init()
+{
+	loadFntFile("resource\\font\\font.fnt");
+
+	setText(0, 0, "Font init");
+
+	glGenBuffers(1, &m_arrayBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_arrayBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(FONTVERTIX) * m_vertices.size(), m_vertices.data(), GL_DYNAMIC_DRAW);
+
+	glGenVertexArrays(1, &m_vertexArray);
+	glBindVertexArray(m_vertexArray);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glBindVertexArray(0);
+
+	m_projection = glm::ortho(0.f, (float)windowWidth, (float)windowHeight, 0.f);
+	m_modelViewProjection = m_projection * m_view;
+
+	return true;
 }
 
 bool Font::loadFntFile(const char* _fileName)
@@ -142,8 +176,8 @@ bool Font::loadFntFile(const char* _fileName)
 		fread(&blockType, 1, 1, pFile);
 		fread(&blockSize, 4, 1, pFile);
 		int numChars = blockSize / sizeof FONTCHAR;
-		puts("\n--FONTCHAR--");
-		printf("numChars: %d\n", numChars);
+		/*puts("\n--FONTCHAR--");
+		printf("numChars: %d\n", numChars);*/
 		m_chars = new FONTCHAR[numChars];
 		if (m_chars != NULL)
 			fread(m_chars, sizeof FONTCHAR, numChars, pFile);
@@ -160,7 +194,7 @@ bool Font::loadFntFile(const char* _fileName)
 			//printf("height: %d\n", m_chars[i].height);
 		}
 		m_charMax++;
-		printf("m_charMax:%d\n", m_charMax);
+		//printf("m_charMax:%d\n", m_charMax);
 		m_pChars = (FONTCHAR **)calloc(m_charMax, sizeof(FONTCHAR*));
 
 		for (int i = 0; i < numChars; i++)
@@ -182,21 +216,80 @@ bool Font::loadFntFile(const char* _fileName)
 	return result;
 }
 
+void Font::setText(float _x, float _y, const char* _format, ...)
+{
+	va_list ap;
+	char str[256];
+	char* p;
+
+	va_start(ap, _format);
+	vsprintf_s(str, _format, ap);
+	va_end(ap);
+
+	vec3 drawPosition = { _x, _y, 0 };
+
+	for (p = str; (*p != '\0') && (*p != '\n'); p++) {
+		FONTCHAR* fntChar = m_pChars[*p];
+
+		FONTVERTIX vertix[4];
+		vertix[0].position = drawPosition + vec3(fntChar->xoffset, fntChar->yoffset, 0);
+		vertix[0].texCoord = vec2((float)fntChar->x / 256.0f, (float)fntChar->y / 256.0f);
+		vertix[1].position = drawPosition + vec3(fntChar->xoffset, fntChar->height + fntChar->yoffset, 0);
+		vertix[1].texCoord = vec2((float)fntChar->x / 256.0f, (float)(fntChar->y + fntChar->height) / 256.0f);
+		vertix[2].position = drawPosition + vec3(fntChar->width + fntChar->xoffset, fntChar->height + fntChar->yoffset, 0);
+		vertix[2].texCoord = vec2((float)(fntChar->x + fntChar->width) / 256.0f, (float)(fntChar->y + fntChar->height) / 256.0f);
+		vertix[3].position = drawPosition + vec3(fntChar->width + fntChar->xoffset, fntChar->yoffset, 0);
+		vertix[3].texCoord = vec2((float)(fntChar->x + fntChar->width) / 256.0f, (float)fntChar->y / 256.0f);
+
+		int index[] = { 0,1,2,0,2,3 };
+		for (int i = 0; i < 6; i++) {
+			m_vertices.push_back(vertix[index[i]]);
+		}
+
+		drawPosition.x += fntChar->xadvance;
+	}
+}
+
+void Font::bind()
+{
+
+}
+
 void Font::draw()
 {
-	m_projection = ortho(0, windowWidth, windowHeight, 0);
-	mat4 modelViewProjection = m_projection * m_view;
-	
-	g_shader.setProgram(PROGRAM_TYPE_FONT);
-	g_textureManager.setTexture(TEXTURE_FONT);
+	glBindBuffer(GL_ARRAY_BUFFER, m_arrayBuffer);
+	//glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(FONTVERTIX) * m_vertices.size(), m_vertices.data());
+	glBufferData(GL_ARRAY_BUFFER, sizeof(FONTVERTIX) * m_vertices.size(), m_vertices.data(), GL_DYNAMIC_DRAW);
 
+	/*std::cout << "m_vertices data:" << m_vertices.data() << "\n";
+	std::cout << "m_vertices size:" << m_vertices.size() << "\n";*/
+	
+	g_textureManager.setTexture(TEXTURE_FONT);
+	g_shader.setProgram(PROGRAM_TYPE_FONT);
 	GLuint program = g_shader.getProgram(PROGRAM_TYPE_FONT);
+
 	glUniformMatrix4fv(
 		glGetUniformLocation(program,
 			"modelViewProjection"),
-		1, GL_FALSE, (GLfloat*)&modelViewProjection);
+		1, GL_FALSE, (GLfloat*)&m_modelViewProjection);
 
+	glBindVertexArray(m_vertexArray);
 
-	g_textureManager.unbindTexture();
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_BLEND);// GLenum cap
+
+	glBlendFunc(
+		GL_SRC_ALPHA,			// GLenum sfactor
+		GL_ONE_MINUS_SRC_ALPHA);// GLenum dfactor
+
+	glDrawArrays(GL_TRIANGLES, 0, (GLsizei)m_vertices.size());
+
+	glDisable(GL_CULL_FACE);
+
+	glBindVertexArray(0);
+
 	glUseProgram(0);
+	g_textureManager.unbindTexture();
+
+	m_vertices.clear();
 }

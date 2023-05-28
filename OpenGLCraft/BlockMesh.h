@@ -17,8 +17,10 @@ public:
 	GLuint m_arrayBuffer;
 	GLuint m_vertexArray;
 	VERTEX m_vertices[36];
+	glm::vec3 m_position;
 
 	BlockMesh();
+	BlockMesh(glm::vec3 _position);
 	~BlockMesh();
 
 	void bind();

@@ -68,12 +68,19 @@ static unsigned char texIndices[] =
 	1, 2, 3, 1, 3, 0	// down
 };
 
-
-
 BlockMesh::BlockMesh()
 	: m_arrayBuffer(0)
 	, m_vertexArray(0)
 	, m_vertices()
+	, m_position(0)
+{
+}
+
+BlockMesh::BlockMesh(vec3 _position)
+	: m_arrayBuffer(0)
+	, m_vertexArray(0)
+	, m_vertices()
+	, m_position(_position)
 {
 }
 
@@ -93,7 +100,7 @@ BlockMesh::~BlockMesh()
 void BlockMesh::bind()
 {
 	for (int i = 0; i < 36; i++) {
-		m_vertices[i].position = vertices[indices[i]];
+		m_vertices[i].position = vertices[indices[i]] + m_position;
 		m_vertices[i].normal = normals[normalIndex[i]];
 		m_vertices[i].texCoord = texCoord[texIndices[i]];
 	}
